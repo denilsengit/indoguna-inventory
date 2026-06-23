@@ -1,0 +1,1550 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IMS · PT Indoguna Utama</title>
+
+    <!-- Bootstrap 5 + Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <!-- Font Awesome (opsional untuk tambahan) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <link rel="icon" type="image/x-icon" href="img/logo-indoguna.png" />
+
+    <style>
+      /* ===== INDOGUNA BRANDING ===== */
+      :root {
+        --indoguna-red: #c8102e;
+        --indoguna-red-dark: #a00d24;
+        --indoguna-red-light: #e8d0d4;
+        --indoguna-white: #ffffff;
+        --indoguna-gray: #f5f6fa;
+        --indoguna-gray-dark: #6b7280;
+        --indoguna-gray-border: #e5e7eb;
+        --sidebar-width: 260px;
+        --sidebar-collapsed: 70px;
+        --header-height: 60px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+        background-color: var(--indoguna-gray);
+        overflow-x: hidden;
+      }
+
+      /* ===== SIDEBAR ===== */
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: var(--sidebar-width);
+        height: 100vh;
+        background: var(--indoguna-white);
+        border-right: 1px solid var(--indoguna-gray-border);
+        z-index: 1050;
+        transition:
+          transform 0.3s ease,
+          width 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        overflow-x: hidden;
+        box-shadow: 2px 0 12px rgba(0, 0, 0, 0.04);
+        cursor: default;
+      }
+
+      /* Sidebar Collapsed State */
+      .sidebar.collapsed {
+        width: var(--sidebar-collapsed);
+      }
+
+      .sidebar.collapsed .sidebar-brand .brand-text {
+        display: none;
+      }
+
+      .sidebar.collapsed .sidebar-brand {
+        justify-content: center;
+        padding: 18px 12px;
+      }
+
+      .sidebar.collapsed .sidebar-menu .menu-label {
+        display: none;
+      }
+
+      .sidebar.collapsed .sidebar-menu .nav-link span:not(.badge-soft) {
+        display: none;
+      }
+
+      .sidebar.collapsed .sidebar-menu .nav-link .badge-soft {
+        display: none;
+      }
+
+      .sidebar.collapsed .sidebar-menu .nav-link i,
+      .sidebar.collapsed .sidebar-menu .nav-link .bi {
+        margin: 0;
+        font-size: 20px;
+      }
+
+      .sidebar.collapsed .sidebar-menu .nav-link {
+        justify-content: center;
+        padding: 10px 0;
+      }
+
+      .sidebar.collapsed .sidebar-menu .nav-link:hover .tooltip-text {
+        visibility: visible;
+        opacity: 1;
+      }
+
+      /* Tooltip untuk collapsed sidebar */
+      .sidebar-menu .nav-link .tooltip-text {
+        position: absolute;
+        left: 60px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: #1f2937;
+        color: #fff;
+        padding: 4px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 500;
+        white-space: nowrap;
+        visibility: hidden;
+        opacity: 0;
+        transition: all 0.25s ease;
+        z-index: 999;
+        pointer-events: none;
+      }
+
+      .sidebar-menu .nav-link .tooltip-text::before {
+        content: "";
+        position: absolute;
+        left: -6px;
+        top: 50%;
+        transform: translateY(-50%);
+        border: 6px solid transparent;
+        border-right-color: #1f2937;
+      }
+
+      .sidebar.collapsed .sidebar-menu .nav-link {
+        position: relative;
+      }
+
+      .sidebar.collapsed .sidebar-menu .nav-link:hover .tooltip-text {
+        visibility: visible;
+        opacity: 1;
+      }
+
+      /* Brand Icon di collapsed */
+      .sidebar.collapsed .brand-icon {
+        margin: 0;
+      }
+
+      .sidebar-brand {
+        display: flex;
+        align-items: center;
+        padding: 18px 20px;
+        border-bottom: 1px solid var(--indoguna-gray-border);
+        gap: 12px;
+        min-height: var(--header-height);
+        flex-shrink: 0;
+        transition: all 0.3s ease;
+        position: relative;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .sidebar-brand:hover {
+        background: var(--indoguna-gray);
+      }
+
+      .sidebar-brand .brand-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--indoguna-red);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-weight: 700;
+        font-size: 18px;
+        flex-shrink: 0;
+        transition: all 0.3s ease;
+      }
+
+      .sidebar-brand .brand-text {
+        font-weight: 700;
+        font-size: 16px;
+        color: #1f2937;
+        letter-spacing: -0.3px;
+        line-height: 1.2;
+        white-space: nowrap;
+        transition: opacity 0.3s ease;
+      }
+
+      .sidebar-brand .brand-text small {
+        display: block;
+        font-weight: 400;
+        font-size: 11px;
+        color: var(--indoguna-gray-dark);
+        letter-spacing: 0.3px;
+      }
+
+      .sidebar-menu {
+        padding: 16px 12px;
+        flex: 1;
+      }
+
+      .sidebar-menu .menu-label {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--indoguna-gray-dark);
+        padding: 8px 12px 4px;
+        opacity: 0.6;
+        transition: opacity 0.3s ease;
+      }
+
+      .sidebar-menu .nav-item {
+        margin-bottom: 2px;
+      }
+
+      .sidebar-menu .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 10px 14px;
+        border-radius: 10px;
+        color: #4b5563;
+        font-weight: 500;
+        font-size: 14px;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        position: relative;
+      }
+
+      .sidebar-menu .nav-link i,
+      .sidebar-menu .nav-link .bi {
+        width: 20px;
+        text-align: center;
+        font-size: 18px;
+        flex-shrink: 0;
+        color: #9ca3af;
+        transition: color 0.2s;
+      }
+
+      .sidebar-menu .nav-link:hover {
+        background: var(--indoguna-gray);
+        color: #1f2937;
+      }
+      .sidebar-menu .nav-link:hover i {
+        color: var(--indoguna-red);
+      }
+
+      .sidebar-menu .nav-link.active {
+        background: var(--indoguna-red);
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(200, 16, 46, 0.25);
+      }
+      .sidebar-menu .nav-link.active i {
+        color: #fff;
+      }
+
+      .sidebar-menu .nav-link .badge-soft {
+        margin-left: auto;
+        background: var(--indoguna-red-light);
+        color: var(--indoguna-red);
+        font-size: 11px;
+        padding: 2px 10px;
+        border-radius: 20px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .sidebar-menu .nav-link.active .badge-soft {
+        background: rgba(255, 255, 255, 0.2);
+        color: #fff;
+      }
+
+      /* ===== SIDEBAR COLLAPSE TOGGLE (mobile) ===== */
+      .sidebar-toggle {
+        display: none;
+        position: fixed;
+        top: 12px;
+        left: 12px;
+        z-index: 1060;
+        background: var(--indoguna-white);
+        border: 1px solid var(--indoguna-gray-border);
+        border-radius: 10px;
+        padding: 8px 12px;
+        font-size: 20px;
+        color: #1f2937;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        transition: all 0.2s;
+      }
+      .sidebar-toggle:hover {
+        background: var(--indoguna-gray);
+      }
+
+      /* ===== MAIN CONTENT ===== */
+      .main-content {
+        margin-left: var(--sidebar-width);
+        transition: margin-left 0.3s ease;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Saat sidebar collapsed */
+      .sidebar.collapsed ~ .main-content {
+        margin-left: var(--sidebar-collapsed);
+      }
+
+      /* ===== HEADER ===== */
+      .top-header {
+        background: var(--indoguna-white);
+        padding: 12px 28px;
+        border-bottom: 1px solid var(--indoguna-gray-border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: var(--header-height);
+        position: sticky;
+        top: 0;
+        z-index: 1040;
+        backdrop-filter: blur(8px);
+        background: rgba(255, 255, 255, 0.92);
+      }
+
+      .top-header .page-title h5 {
+        font-weight: 700;
+        color: #1f2937;
+        margin: 0;
+        font-size: 18px;
+      }
+      .top-header .page-title small {
+        font-size: 13px;
+        color: var(--indoguna-gray-dark);
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .header-actions .user-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .header-actions .user-info .avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: var(--indoguna-red);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 14px;
+      }
+      .header-actions .user-info .user-name {
+        font-weight: 600;
+        font-size: 14px;
+        color: #1f2937;
+      }
+      .header-actions .user-info .user-role {
+        font-size: 12px;
+        color: var(--indoguna-gray-dark);
+      }
+
+      .header-actions .notification-bell {
+        position: relative;
+        cursor: pointer;
+        font-size: 20px;
+        color: #6b7280;
+        transition: color 0.2s;
+      }
+      .header-actions .notification-bell:hover {
+        color: var(--indoguna-red);
+      }
+      .header-actions .notification-bell .dot {
+        position: absolute;
+        top: -4px;
+        right: -6px;
+        width: 18px;
+        height: 18px;
+        background: var(--indoguna-red);
+        border-radius: 50%;
+        font-size: 10px;
+        font-weight: 700;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid #fff;
+      }
+
+      /* ===== DASHBOARD CARDS ===== */
+      .stat-card {
+        background: var(--indoguna-white);
+        border-radius: 16px;
+        padding: 20px 24px;
+        border: 1px solid var(--indoguna-gray-border);
+        transition: all 0.25s ease;
+        height: 100%;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+      }
+      .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
+        border-color: #d1d5db;
+      }
+
+      .stat-card .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        margin-bottom: 12px;
+      }
+      .stat-card .stat-icon.red {
+        background: #fee2e2;
+        color: var(--indoguna-red);
+      }
+      .stat-card .stat-icon.green {
+        background: #d1fae5;
+        color: #059669;
+      }
+      .stat-card .stat-icon.blue {
+        background: #dbeafe;
+        color: #2563eb;
+      }
+      .stat-card .stat-icon.purple {
+        background: #ede9fe;
+        color: #7c3aed;
+      }
+
+      .stat-card .stat-number {
+        font-size: 28px;
+        font-weight: 800;
+        color: #1f2937;
+        letter-spacing: -0.5px;
+        line-height: 1.2;
+      }
+      .stat-card .stat-label {
+        font-size: 14px;
+        color: var(--indoguna-gray-dark);
+        font-weight: 500;
+        margin-top: 2px;
+      }
+      .stat-card .stat-change {
+        font-size: 13px;
+        font-weight: 600;
+        margin-top: 8px;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 2px 12px;
+        border-radius: 20px;
+        background: #ecfdf5;
+        color: #065f46;
+      }
+      .stat-card .stat-change.down {
+        background: #fef2f2;
+        color: #991b1b;
+      }
+
+      /* ===== TABLES ===== */
+      .card-table {
+        background: var(--indoguna-white);
+        border-radius: 16px;
+        border: 1px solid var(--indoguna-gray-border);
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+      }
+      .card-table .card-header {
+        background: transparent;
+        border-bottom: 1px solid var(--indoguna-gray-border);
+        padding: 16px 24px;
+        font-weight: 600;
+        font-size: 15px;
+        color: #1f2937;
+      }
+      .card-table .card-body {
+        padding: 0;
+      }
+      .card-table table {
+        margin: 0;
+        font-size: 14px;
+      }
+      .card-table table th {
+        background: var(--indoguna-gray);
+        font-weight: 600;
+        color: #4b5563;
+        border-bottom: 1px solid var(--indoguna-gray-border);
+        padding: 12px 16px;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+      }
+      .card-table table td {
+        padding: 12px 16px;
+        vertical-align: middle;
+        border-bottom: 1px solid var(--indoguna-gray-border);
+        color: #374151;
+      }
+      .card-table table tr:last-child td {
+        border-bottom: none;
+      }
+      .card-table table .badge-stock {
+        font-weight: 600;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+      }
+      .badge-stock.danger {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+      .badge-stock.warning {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      .badge-stock.success {
+        background: #d1fae5;
+        color: #065f46;
+      }
+
+      /* Low stock highlight */
+      .row-low-stock {
+        background: #fef2f2 !important;
+        border-left: 4px solid var(--indoguna-red);
+      }
+      .row-low-stock td:first-child {
+        padding-left: 12px;
+      }
+
+      /* ===== CHARTS ===== */
+      .chart-container {
+        background: var(--indoguna-white);
+        border-radius: 16px;
+        border: 1px solid var(--indoguna-gray-border);
+        padding: 20px 20px 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+        height: 100%;
+      }
+      .chart-container .chart-title {
+        font-weight: 600;
+        font-size: 15px;
+        color: #1f2937;
+        margin-bottom: 12px;
+      }
+
+      /* ===== TOAST ===== */
+      .toast-container-custom {
+        position: fixed;
+        top: 80px;
+        right: 24px;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-width: 380px;
+      }
+      .toast-custom {
+        background: #fff;
+        border-radius: 12px;
+        padding: 14px 20px;
+        border-left: 5px solid var(--indoguna-red);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        animation: slideInRight 0.35s ease;
+        border: 1px solid var(--indoguna-gray-border);
+      }
+      .toast-custom.success {
+        border-left-color: #059669;
+      }
+      .toast-custom .toast-icon {
+        font-size: 22px;
+        color: var(--indoguna-red);
+      }
+      .toast-custom.success .toast-icon {
+        color: #059669;
+      }
+      .toast-custom .toast-msg {
+        flex: 1;
+        font-weight: 500;
+        color: #1f2937;
+        font-size: 14px;
+      }
+      .toast-custom .toast-close {
+        background: none;
+        border: none;
+        font-size: 18px;
+        color: #9ca3af;
+        cursor: pointer;
+        padding: 0 4px;
+      }
+      .toast-custom .toast-close:hover {
+        color: #4b5563;
+      }
+
+      @keyframes slideInRight {
+        from {
+          opacity: 0;
+          transform: translateX(40px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      /* ===== RESPONSIVE ===== */
+      @media (max-width: 991.98px) {
+        .sidebar {
+          transform: translateX(-100%);
+          width: var(--sidebar-width);
+        }
+        .sidebar.show {
+          transform: translateX(0);
+        }
+        .sidebar-toggle {
+          display: block;
+        }
+        .main-content {
+          margin-left: 0;
+        }
+        /* Pada mobile, collapsed tidak berlaku */
+        .sidebar.collapsed {
+          width: var(--sidebar-width);
+        }
+        .sidebar.collapsed .sidebar-brand .brand-text {
+          display: block;
+        }
+        .sidebar.collapsed .sidebar-brand {
+          justify-content: flex-start;
+          padding: 18px 20px;
+        }
+        .sidebar.collapsed .sidebar-menu .menu-label {
+          display: block;
+        }
+        .sidebar.collapsed .sidebar-menu .nav-link span:not(.badge-soft) {
+          display: inline;
+        }
+        .sidebar.collapsed .sidebar-menu .nav-link .badge-soft {
+          display: inline;
+        }
+        .sidebar.collapsed .sidebar-menu .nav-link i,
+        .sidebar.collapsed .sidebar-menu .nav-link .bi {
+          font-size: 18px;
+        }
+        .sidebar.collapsed .sidebar-menu .nav-link {
+          justify-content: flex-start;
+          padding: 10px 14px;
+        }
+        .sidebar.collapsed .sidebar-menu .nav-link .tooltip-text {
+          display: none !important;
+        }
+        .sidebar.collapsed ~ .main-content {
+          margin-left: 0;
+        }
+        .top-header {
+          padding: 12px 16px;
+        }
+        .top-header .page-title h5 {
+          font-size: 16px;
+        }
+        .header-actions .user-info .user-detail {
+          display: none;
+        }
+        .stat-card .stat-number {
+          font-size: 22px;
+        }
+        .toast-container-custom {
+          right: 12px;
+          left: 12px;
+          max-width: 100%;
+          top: 70px;
+        }
+        /* Reset collapsed pada mobile saat sidebar terbuka */
+        .sidebar.show.collapsed {
+          width: var(--sidebar-width);
+        }
+        .sidebar.show.collapsed .sidebar-brand .brand-text {
+          display: block;
+        }
+        .sidebar.show.collapsed .sidebar-menu .menu-label {
+          display: block;
+        }
+        .sidebar.show.collapsed .sidebar-menu .nav-link span:not(.badge-soft) {
+          display: inline;
+        }
+        .sidebar.show.collapsed .sidebar-menu .nav-link .badge-soft {
+          display: inline;
+        }
+        .sidebar.show.collapsed .sidebar-menu .nav-link {
+          justify-content: flex-start;
+          padding: 10px 14px;
+        }
+      }
+
+      @media (max-width: 575.98px) {
+        .stat-card {
+          padding: 16px;
+        }
+        .stat-card .stat-number {
+          font-size: 20px;
+        }
+        .card-table table {
+          font-size: 13px;
+        }
+        .card-table table th,
+        .card-table table td {
+          padding: 8px 12px;
+        }
+        .top-header .page-title small {
+          display: none;
+        }
+        .header-actions .notification-bell .dot {
+          width: 16px;
+          height: 16px;
+          font-size: 9px;
+          top: -3px;
+          right: -4px;
+        }
+      }
+
+      /* ===== SCROLLBAR ===== */
+      ::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #d1d5db;
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #b0b4ba;
+      }
+
+      /* ===== LOADING SPINNER ===== */
+      .spinner-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.65);
+        backdrop-filter: blur(3px);
+        z-index: 9998;
+        align-items: center;
+        justify-content: center;
+      }
+      .spinner-overlay.show {
+        display: flex;
+      }
+      .spinner-overlay .spinner-border {
+        width: 3rem;
+        height: 3rem;
+        color: var(--indoguna-red);
+      }
+
+      /* Skeleton loading */
+      .skeleton {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        border-radius: 6px;
+      }
+      @keyframes shimmer {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+
+      /* utility */
+      .text-indoguna-red {
+        color: var(--indoguna-red);
+      }
+      .bg-indoguna-red {
+        background-color: var(--indoguna-red);
+      }
+      .border-indoguna-red {
+        border-color: var(--indoguna-red);
+      }
+      .fw-600 {
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ===== LOADING OVERLAY ===== -->
+    <div class="spinner-overlay" id="globalSpinner">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <!-- ===== TOAST CONTAINER ===== -->
+    <div class="toast-container-custom" id="toastContainer"></div>
+
+    <!-- ===== SIDEBAR TOGGLE (mobile) ===== -->
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+      <i class="bi bi-list"></i>
+    </button>
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+      <!-- Brand - klik logo untuk toggle collapse -->
+      <div class="sidebar-brand" id="sidebarBrand">
+        <img src="img/logo-indoguna.png" alt="Indoguna Logo" class="brand-icon" />
+        <div class="brand-text">
+          IMS Indoguna
+          <small>Inventory Management</small>
+        </div>
+      </div>
+
+      <!-- Menu -->
+      <nav class="sidebar-menu">
+        <div class="menu-label">Navigasi</div>
+
+        <div class="nav-item">
+          <a href="#" class="nav-link active" data-page="dashboard">
+            <i class="bi bi-grid-1x2-fill"></i>
+            <span>Dashboard</span>
+            <span class="tooltip-text">Dashboard</span>
+          </a>
+        </div>
+
+        <div class="menu-label mt-3">Master Data</div>
+
+        <div class="nav-item">
+          <a href="produk.html" class="nav-link" data-page="products">
+            <i class="bi bi-box-seam"></i>
+            <span>Produk</span>
+            <span class="tooltip-text">Produk</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="#" class="nav-link" data-page="categories">
+            <i class="bi bi-tags"></i>
+            <span>Kategori</span>
+            <span class="tooltip-text">Kategori</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="#" class="nav-link" data-page="suppliers">
+            <i class="bi bi-truck"></i>
+            <span>Pemasok</span>
+            <span class="tooltip-text">Pemasok</span>
+          </a>
+        </div>
+
+        <div class="menu-label mt-3">Transaksi</div>
+
+        <div class="nav-item">
+          <a href="#" class="nav-link" data-page="stock-in">
+            <i class="bi bi-arrow-down-circle"></i>
+            <span>Barang Masuk</span>
+            <span class="badge-soft">+</span>
+            <span class="tooltip-text">Barang Masuk</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="#" class="nav-link" data-page="stock-out">
+            <i class="bi bi-arrow-up-circle"></i>
+            <span>Barang Keluar</span>
+            <span class="badge-soft">-</span>
+            <span class="tooltip-text">Barang Keluar</span>
+          </a>
+        </div>
+
+        <div class="menu-label mt-3">Laporan</div>
+
+        <div class="nav-item">
+          <a href="#" class="nav-link" data-page="reports">
+            <i class="bi bi-file-earmark-text"></i>
+            <span>Laporan Mutasi</span>
+            <span class="tooltip-text">Laporan Mutasi</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="#" class="nav-link" data-page="stock-report">
+            <i class="bi bi-clipboard-data"></i>
+            <span>Rekap Stok</span>
+            <span class="tooltip-text">Rekap Stok</span>
+          </a>
+        </div>
+
+        <div class="menu-label mt-3">Sistem</div>
+
+        <div class="nav-item">
+          <a href="#" class="nav-link" data-page="users">
+            <i class="bi bi-people"></i>
+            <span>Pengguna</span>
+            <span class="badge-soft">Admin</span>
+            <span class="tooltip-text">Pengguna</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="#" class="nav-link" data-page="settings">
+            <i class="bi bi-gear"></i>
+            <span>Pengaturan</span>
+            <span class="tooltip-text">Pengaturan</span>
+          </a>
+        </div>
+
+        <hr class="my-3" style="border-color: var(--indoguna-gray-border)" />
+
+        <div class="nav-item">
+          <a href="login.html" class="nav-link" id="logoutBtn" style="color: #dc2626">
+            <i class="bi bi-box-arrow-right" style="color: #dc2626"></i>
+            <span>Keluar</span>
+            <span class="tooltip-text">Keluar</span>
+          </a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="main-content" id="mainContent">
+      <!-- ===== TOP HEADER ===== -->
+      <header class="top-header">
+        <div class="page-title">
+          <h5 id="pageTitle">Dashboard</h5>
+          <small id="pageSubtitle">Ringkasan stok dan aktivitas hari ini</small>
+        </div>
+        <div class="header-actions">
+          <div class="notification-bell" id="notificationBell" title="Notifikasi Low Stock">
+            <i class="bi bi-bell-fill"></i>
+            <span class="dot" id="notifCount">3</span>
+          </div>
+          <div class="user-info">
+            <div class="user-detail">
+              <div class="user-name">Admin IMS</div>
+              <div class="user-role">Administrator</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- ===== PAGE CONTENT ===== -->
+      <div class="container-fluid p-3 p-lg-4" id="pageContent">
+        <!-- ===== DASHBOARD VIEW ===== -->
+        <div id="view-dashboard">
+          <!-- Stats Cards -->
+          <div class="row g-3 g-lg-4 mb-4">
+            <div class="col-6 col-lg-3">
+              <div class="stat-card">
+                <div class="stat-icon red"><i class="bi bi-boxes"></i></div>
+                <div class="stat-number" id="totalItems">—</div>
+                <div class="stat-label">Total Item Produk</div>
+                <div class="stat-change"><i class="bi bi-arrow-up-short"></i> 12% bulan lalu</div>
+              </div>
+            </div>
+            <div class="col-6 col-lg-3">
+              <div class="stat-card">
+                <div class="stat-icon green"><i class="bi bi-currency-dollar"></i></div>
+                <div class="stat-number" id="totalValue">—</div>
+                <div class="stat-label">Total Nilai Stok</div>
+                <div class="stat-change"><i class="bi bi-arrow-up-short"></i> 8.2% bulan lalu</div>
+              </div>
+            </div>
+            <div class="col-6 col-lg-3">
+              <div class="stat-card">
+                <div class="stat-icon blue"><i class="bi bi-arrow-left-right"></i></div>
+                <div class="stat-number" id="todayTrans">—</div>
+                <div class="stat-label">Transaksi Hari Ini</div>
+                <div class="stat-change"><i class="bi bi-arrow-up-short"></i> 4 transaksi terakhir</div>
+              </div>
+            </div>
+            <div class="col-6 col-lg-3">
+              <div class="stat-card">
+                <div class="stat-icon purple"><i class="bi bi-exclamation-triangle"></i></div>
+                <div class="stat-number" id="lowStockCount">—</div>
+                <div class="stat-label">Stok Menipis</div>
+                <div class="stat-change down"><i class="bi bi-arrow-down-short"></i> Perlu restock</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Low Stock Alert + Chart -->
+          <div class="row g-3 g-lg-4 mb-4">
+            <div class="col-lg-6">
+              <div class="card-table">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <span><i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>Peringatan Stok Menipis</span>
+                  <span class="badge bg-danger" id="lowStockBadge">0</span>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-hover" id="lowStockTable">
+                      <thead>
+                        <tr>
+                          <th>Kode</th>
+                          <th>Nama Barang</th>
+                          <th>Stok</th>
+                          <th>Minimal</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody id="lowStockBody">
+                        <!-- dinamis -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="chart-container">
+                <div class="chart-title">
+                  <i class="bi bi-bar-chart-fill me-2 text-indoguna-red"></i>
+                  10 Barang Paling Aktif (Minggu Ini)
+                </div>
+                <canvas id="topItemsChart" height="220"></canvas>
+                <div class="mt-2 text-center text-muted small">
+                  <span class="me-3"><span class="badge bg-success me-1">●</span> Masuk</span>
+                  <span><span class="badge bg-danger me-1">●</span> Keluar</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Transactions -->
+          <div class="row g-3 g-lg-4">
+            <div class="col-12">
+              <div class="card-table">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <span><i class="bi bi-clock-history me-2"></i>Transaksi Terakhir</span>
+                  <span class="text-muted small">5 entri terbaru</span>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-hover" id="recentTransTable">
+                      <thead>
+                        <tr>
+                          <th>No. Transaksi</th>
+                          <th>Tanggal</th>
+                          <th>Jenis</th>
+                          <th>Barang</th>
+                          <th>Jumlah</th>
+                          <th>User</th>
+                        </tr>
+                      </thead>
+                      <tbody id="recentTransBody">
+                        <!-- dinamis -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== OTHER VIEWS (placeholder) ===== -->
+        <div id="view-products" class="d-none">
+          <div class="alert alert-info d-flex align-items-center gap-3">
+            <i class="bi bi-box-seam fs-3"></i>
+            <div>
+              <h5 class="mb-1">Halaman Manajemen Produk</h5>
+              <p class="mb-0 text-muted">Fitur CRUD produk akan ditampilkan di sini. (Mockup)</p>
+            </div>
+          </div>
+          <div class="text-center py-5">
+            <i class="bi bi-box-seam fs-1 text-muted"></i>
+            <p class="text-muted mt-3">Klik "Barang Masuk" atau "Barang Keluar" untuk simulasi transaksi.</p>
+          </div>
+        </div>
+        <div id="view-categories" class="d-none">
+          <div class="alert alert-secondary">Halaman Kategori (Mockup)</div>
+        </div>
+        <div id="view-suppliers" class="d-none">
+          <div class="alert alert-secondary">Halaman Pemasok (Mockup)</div>
+        </div>
+        <div id="view-stock-in" class="d-none">
+          <div class="alert alert-success d-flex align-items-center gap-3">
+            <i class="bi bi-arrow-down-circle fs-3"></i>
+            <div>
+              <h5 class="mb-1">Form Barang Masuk</h5>
+              <p class="mb-0 text-muted">Simulasi: klik tombol di bawah untuk menambah stok.</p>
+            </div>
+          </div>
+          <button class="btn btn-success" id="simulateStockIn"><i class="bi bi-plus-circle me-2"></i>Simulasi Barang Masuk (+5 KG)</button>
+          <div class="mt-3 text-muted small">* Hanya simulasi untuk demo dashboard.</div>
+        </div>
+        <div id="view-stock-out" class="d-none">
+          <div class="alert alert-danger d-flex align-items-center gap-3">
+            <i class="bi bi-arrow-up-circle fs-3"></i>
+            <div>
+              <h5 class="mb-1">Form Barang Keluar</h5>
+              <p class="mb-0 text-muted">Simulasi: klik tombol di bawah untuk mengurangi stok.</p>
+            </div>
+          </div>
+          <button class="btn btn-danger" id="simulateStockOut"><i class="bi bi-dash-circle me-2"></i>Simulasi Barang Keluar (-2 KG)</button>
+          <div class="mt-3 text-muted small">* Validasi stok negatif diterapkan.</div>
+        </div>
+        <div id="view-reports" class="d-none">
+          <div class="alert alert-secondary">Laporan Mutasi (Mockup)</div>
+        </div>
+        <div id="view-stock-report" class="d-none">
+          <div class="alert alert-secondary">Rekap Stok (Mockup)</div>
+        </div>
+        <div id="view-users" class="d-none">
+          <div class="alert alert-secondary">Manajemen Pengguna (Mockup)</div>
+        </div>
+        <div id="view-settings" class="d-none">
+          <div class="alert alert-secondary">Pengaturan (Mockup)</div>
+        </div>
+      </div>
+      <!-- /container-fluid -->
+
+      <!-- ===== FOOTER ===== -->
+      <footer class="text-center text-muted py-3 border-top mt-auto" style="background: var(--indoguna-white); font-size: 13px; border-color: var(--indoguna-gray-border) !important">
+        &copy; 2022 PT. Indoguna Utama · Inventory Management System v1.0
+      </footer>
+    </div>
+    <!-- /main-content -->
+
+    <!-- ===== SCRIPTS ===== -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      $(function () {
+        // ============================================================
+        //  1. MOCK DATA
+        // ============================================================
+        const mockProducts = [
+          { id: 1, code: "ITEM-001", name: "Beef Tenderloin", category: "Beef", unit: "KG", stock: 42, minStock: 20, price: 185000 },
+          { id: 2, code: "ITEM-002", name: "Chicken Breast Fillet", category: "Chicken", unit: "KG", stock: 18, minStock: 25, price: 72000 },
+          { id: 3, code: "ITEM-003", name: "Lamb Rack", category: "Lamb", unit: "KG", stock: 12, minStock: 15, price: 210000 },
+          { id: 4, code: "ITEM-004", name: "Salmon Fillet", category: "Seafood", unit: "KG", stock: 8, minStock: 10, price: 165000 },
+          { id: 5, code: "ITEM-005", name: "Wagyu Striploin", category: "Beef", unit: "KG", stock: 5, minStock: 8, price: 420000 },
+          { id: 6, code: "ITEM-006", name: "Chicken Drumstick", category: "Chicken", unit: "KG", stock: 35, minStock: 30, price: 48000 },
+          { id: 7, code: "ITEM-007", name: "Lamb Chop", category: "Lamb", unit: "KG", stock: 22, minStock: 20, price: 195000 },
+          { id: 8, code: "ITEM-008", name: "Tuna Steak", category: "Seafood", unit: "KG", stock: 14, minStock: 12, price: 145000 },
+          { id: 9, code: "ITEM-009", name: "Beef Short Rib", category: "Beef", unit: "KG", stock: 9, minStock: 15, price: 155000 },
+          { id: 10, code: "ITEM-010", name: "Chicken Wing", category: "Chicken", unit: "KG", stock: 28, minStock: 30, price: 38000 },
+        ];
+
+        // Recent transactions mock
+        let recentTransactions = [
+          { id: "TRX-001", date: "2026-06-23 09:15", type: "Masuk", item: "Beef Tenderloin", qty: 15, user: "Staff Gudang" },
+          { id: "TRX-002", date: "2026-06-23 10:30", type: "Keluar", item: "Chicken Breast Fillet", qty: 8, user: "Staff Gudang" },
+          { id: "TRX-003", date: "2026-06-22 14:20", type: "Masuk", item: "Salmon Fillet", qty: 12, user: "Staff Gudang" },
+          { id: "TRX-004", date: "2026-06-22 11:05", type: "Keluar", item: "Lamb Rack", qty: 4, user: "Manajer" },
+          { id: "TRX-005", date: "2026-06-21 16:45", type: "Masuk", item: "Wagyu Striploin", qty: 6, user: "Staff Gudang" },
+        ];
+
+        // ============================================================
+        //  2. HELPER FUNCTIONS
+        // ============================================================
+        function formatCurrency(val) {
+          return "Rp " + Number(val).toLocaleString("id-ID");
+        }
+
+        function formatDate(dateStr) {
+          const d = new Date(dateStr);
+          return d.toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
+        }
+
+        function getStockStatus(stock, minStock) {
+          if (stock <= 0) return { label: "Habis", class: "danger" };
+          if (stock < minStock) return { label: "Menipis", class: "danger" };
+          if (stock <= minStock * 1.2) return { label: "Hampir Habis", class: "warning" };
+          return { label: "Aman", class: "success" };
+        }
+
+        // ============================================================
+        //  3. RENDER DASHBOARD
+        // ============================================================
+        function renderDashboard() {
+          showSpinner();
+
+          // Simulate AJAX delay
+          setTimeout(function () {
+            const products = mockProducts;
+            const totalItems = products.length;
+            const totalValue = products.reduce((sum, p) => sum + p.stock * p.price, 0);
+            const lowStockItems = products.filter((p) => p.stock < p.minStock);
+            const todayTrans = recentTransactions.filter((t) => {
+              const today = new Date().toISOString().slice(0, 10);
+              return t.date.startsWith(today);
+            });
+
+            // Update cards
+            $("#totalItems").text(totalItems);
+            $("#totalValue").text(formatCurrency(totalValue));
+            $("#todayTrans").text(todayTrans.length);
+            $("#lowStockCount").text(lowStockItems.length);
+            $("#lowStockBadge").text(lowStockItems.length);
+
+            // Low stock table
+            const tbody = $("#lowStockBody");
+            tbody.empty();
+            if (lowStockItems.length === 0) {
+              tbody.html('<tr><td colspan="5" class="text-center text-muted py-3">✨ Semua stok aman, tidak ada peringatan.</td></tr>');
+            } else {
+              lowStockItems.forEach((p) => {
+                const status = getStockStatus(p.stock, p.minStock);
+                tbody.append(`
+                                <tr class="row-low-stock">
+                                    <td><span class="fw-semibold">${p.code}</span></td>
+                                    <td>${p.name}</td>
+                                    <td><strong>${p.stock}</strong> ${p.unit}</td>
+                                    <td>${p.minStock} ${p.unit}</td>
+                                    <td><span class="badge-stock ${status.class}">${status.label}</span></td>
+                                </tr>
+                            `);
+              });
+            }
+
+            // Recent transactions
+            const rtbody = $("#recentTransBody");
+            rtbody.empty();
+            const display = recentTransactions.slice(0, 5);
+            display.forEach((t) => {
+              const badgeType = t.type === "Masuk" ? '<span class="badge bg-success">Masuk</span>' : '<span class="badge bg-danger">Keluar</span>';
+              rtbody.append(`
+                            <tr>
+                                <td><span class="fw-semibold">${t.id}</span></td>
+                                <td>${formatDate(t.date)}</td>
+                                <td>${badgeType}</td>
+                                <td>${t.item}</td>
+                                <td><strong>${t.qty}</strong> KG</td>
+                                <td><span class="text-muted small">${t.user}</span></td>
+                            </tr>
+                        `);
+            });
+
+            // Chart (top 10 items)
+            renderChart(products);
+
+            // Notification dot
+            updateNotifBadge(lowStockItems.length);
+
+            hideSpinner();
+          }, 400);
+        }
+
+        // ============================================================
+        //  4. CHART
+        // ============================================================
+        let chartInstance = null;
+
+        function renderChart(products) {
+          // Ambil 10 produk dengan stok terendah (paling aktif / kritis)
+          const sorted = [...products].sort((a, b) => a.stock - b.stock).slice(0, 10);
+          const labels = sorted.map((p) => p.code);
+          const inData = sorted.map((p) => Math.round(p.stock * (0.3 + Math.random() * 0.5)));
+          const outData = sorted.map((p) => Math.round(p.stock * (0.2 + Math.random() * 0.4)));
+
+          const ctx = document.getElementById("topItemsChart").getContext("2d");
+
+          if (chartInstance) chartInstance.destroy();
+
+          chartInstance = new Chart(ctx, {
+            type: "bar",
+            data: {
+              labels: labels,
+              datasets: [
+                {
+                  label: "Masuk",
+                  data: inData,
+                  backgroundColor: "rgba(5, 150, 105, 0.7)",
+                  borderColor: "#059669",
+                  borderWidth: 1,
+                  borderRadius: 4,
+                },
+                {
+                  label: "Keluar",
+                  data: outData,
+                  backgroundColor: "rgba(200, 16, 46, 0.7)",
+                  borderColor: "#C8102E",
+                  borderWidth: 1,
+                  borderRadius: 4,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: true,
+              plugins: {
+                legend: {
+                  display: false,
+                },
+              },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  grid: { color: "rgba(0,0,0,0.04)" },
+                  ticks: { font: { size: 11 } },
+                },
+                x: {
+                  grid: { display: false },
+                  ticks: { font: { size: 10 } },
+                },
+              },
+              borderRadius: 4,
+            },
+          });
+        }
+
+        // ============================================================
+        //  5. NOTIFICATION BADGE
+        // ============================================================
+        function updateNotifBadge(count) {
+          const dot = $("#notifCount");
+          if (count > 0) {
+            dot.text(count).show();
+          } else {
+            dot.text("0").hide();
+          }
+        }
+
+        // ============================================================
+        //  6. TOAST SYSTEM
+        // ============================================================
+        function showToast(message, type) {
+          type = type || "info";
+          const iconMap = {
+            success: "bi-check-circle-fill",
+            danger: "bi-x-circle-fill",
+            info: "bi-info-circle-fill",
+          };
+          const icon = iconMap[type] || iconMap.info;
+          const container = $("#toastContainer");
+          const toast = $(`
+                    <div class="toast-custom ${type}">
+                        <div class="toast-icon"><i class="bi ${icon}"></i></div>
+                        <div class="toast-msg">${message}</div>
+                        <button class="toast-close"><i class="bi bi-x-lg"></i></button>
+                    </div>
+                `);
+          container.append(toast);
+          setTimeout(function () {
+            toast.fadeOut(300, function () {
+              $(this).remove();
+            });
+          }, 4500);
+          toast.find(".toast-close").on("click", function () {
+            toast.fadeOut(200, function () {
+              $(this).remove();
+            });
+          });
+        }
+
+        // ============================================================
+        //  7. SPINNER
+        // ============================================================
+        function showSpinner() {
+          $("#globalSpinner").addClass("show");
+        }
+
+        function hideSpinner() {
+          $("#globalSpinner").removeClass("show");
+        }
+
+        // ============================================================
+        //  8. SIDEBAR TOGGLE VIA LOGO CLICK
+        // ============================================================
+        let isSidebarCollapsed = false;
+
+        $("#sidebarBrand").on("click", function () {
+          const sidebar = $("#sidebar");
+
+          if (isSidebarCollapsed) {
+            // Expand sidebar
+            sidebar.removeClass("collapsed");
+            isSidebarCollapsed = false;
+            localStorage.setItem("sidebarCollapsed", "false");
+          } else {
+            // Collapse sidebar
+            sidebar.addClass("collapsed");
+            isSidebarCollapsed = true;
+            localStorage.setItem("sidebarCollapsed", "true");
+          }
+        });
+
+        // Restore state dari localStorage
+        const savedState = localStorage.getItem("sidebarCollapsed");
+        if (savedState === "true") {
+          const sidebar = $("#sidebar");
+          sidebar.addClass("collapsed");
+          isSidebarCollapsed = true;
+        }
+
+        // ============================================================
+        //  9. SIDEBAR NAVIGATION
+        // ============================================================
+        function navigateTo(page) {
+          // Hide all views
+          $('[id^="view-"]').addClass("d-none");
+
+          // Show target view
+          const target = $("#view-" + page);
+          if (target.length) {
+            target.removeClass("d-none");
+          } else {
+            // fallback: show dashboard
+            $("#view-dashboard").removeClass("d-none");
+            page = "dashboard";
+          }
+
+          // Update sidebar active
+          $(".sidebar-menu .nav-link").removeClass("active");
+          $('.sidebar-menu .nav-link[data-page="' + page + '"]').addClass("active");
+
+          // Update page title
+          const titles = {
+            dashboard: { title: "Dashboard", sub: "Ringkasan stok dan aktivitas hari ini" },
+            products: { title: "Manajemen Produk", sub: "Kelola data produk" },
+            categories: { title: "Kategori Barang", sub: "Kelola kategori" },
+            suppliers: { title: "Pemasok", sub: "Kelola data pemasok" },
+            "stock-in": { title: "Barang Masuk", sub: "Catat penerimaan barang" },
+            "stock-out": { title: "Barang Keluar", sub: "Catat pengeluaran barang" },
+            reports: { title: "Laporan Mutasi", sub: "Riwayat pergerakan stok" },
+            "stock-report": { title: "Rekap Stok", sub: "Laporan stok terkini" },
+            users: { title: "Manajemen Pengguna", sub: "Kelola akun & hak akses" },
+            settings: { title: "Pengaturan", sub: "Konfigurasi sistem" },
+          };
+          const info = titles[page] || titles.dashboard;
+          $("#pageTitle").text(info.title);
+          $("#pageSubtitle").text(info.sub);
+
+          // If dashboard, re-render
+          if (page === "dashboard") {
+            renderDashboard();
+          }
+
+          // Close sidebar on mobile
+          if ($(window).width() < 992) {
+            $("#sidebar").removeClass("show");
+          }
+        }
+
+        // ============================================================
+        //  10. SIMULASI STOCK IN / OUT
+        // ============================================================
+        function simulateStockIn() {
+          const target = mockProducts.find((p) => p.id === 1);
+          if (target) {
+            target.stock += 5;
+            showToast("✅ " + target.name + " +5 KG (stok sekarang " + target.stock + " KG)", "success");
+            renderDashboard();
+          }
+        }
+
+        function simulateStockOut() {
+          const target = mockProducts.find((p) => p.id === 2);
+          if (target) {
+            if (target.stock < 2) {
+              showToast("❌ Gagal! Stok " + target.name + " tidak mencukupi (Sisa: " + target.stock + " KG)", "danger");
+              return;
+            }
+            target.stock -= 2;
+            showToast("✅ " + target.name + " -2 KG (stok sekarang " + target.stock + " KG)", "success");
+            renderDashboard();
+          }
+        }
+
+        // ============================================================
+        //  11. EVENT BINDINGS
+        // ============================================================
+
+        // Sidebar toggle (mobile)
+        $("#sidebarToggle").on("click", function () {
+          $("#sidebar").toggleClass("show");
+        });
+
+        // Sidebar nav links
+        $(".sidebar-menu .nav-link[data-page]").on("click", function (e) {
+          e.preventDefault();
+          const page = $(this).data("page");
+          if (page) navigateTo(page);
+        });
+
+        // Logout
+        $("#logoutBtn").on("click", function (e) {
+          e.preventDefault();
+          showToast("Anda telah keluar dari sistem.", "info");
+        });
+
+        // Notification bell
+        $("#notificationBell").on("click", function () {
+          const count = $("#notifCount").text();
+          if (count > 0) {
+            showToast("Terdapat " + count + " item dengan stok menipis!", "danger");
+          } else {
+            showToast("Semua stok dalam kondisi aman.", "success");
+          }
+        });
+
+        // Simulate buttons
+        $("#simulateStockIn").on("click", simulateStockIn);
+        $("#simulateStockOut").on("click", simulateStockOut);
+
+        // ============================================================
+        //  12. INIT
+        // ============================================================
+        renderDashboard();
+
+        // Auto-refresh setiap 60 detik (simulasi real-time)
+        setInterval(function () {
+          if ($("#view-dashboard").is(":visible")) {
+            renderDashboard();
+          }
+        }, 60000);
+
+        // Resize chart on window resize
+        let resizeTimer;
+        $(window).on("resize", function () {
+          clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            if (chartInstance) chartInstance.resize();
+          }, 200);
+        });
+
+        // Show a welcome toast after load
+        setTimeout(function () {
+          showToast("Selamat datang di IMS Indoguna! Sistem siap digunakan.", "success");
+        }, 800);
+      }); // end doc ready
+    </script>
+  </body>
+</html>
